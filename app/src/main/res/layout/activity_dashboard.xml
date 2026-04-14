@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dashboard_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"/>
+
+    <Button
+        android:id="@+id/btnTryAR"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="@string/btn_try_ar"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnBook"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="@string/btn_book_appointment"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnProfile"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="@string/btn_my_profile"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_logout"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginTop="20dp"
+        android:textColor="#FF0000"/>
+
+</LinearLayout>

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Manicure AR</string>
+
+    <string name="login_title">Manicure AR Login</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Log In</string>
+    <string name="go_to_register">Don\'t have an account? Register here</string>
+    <string name="error_empty_fields">Please enter both email and password</string>
+    <string name="error_invalid_credentials">Invalid email or password</string>
+    <string name="welcome_message">Welcome back, %s!</string>
+
+    <string name="register_title">Create Account</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_phone">Phone Number</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="btn_register">Register</string>
+    <string name="error_passwords_dont_match">Passwords do not match!</string>
+    <string name="error_weak_password">Password must be at least 8 characters, include an uppercase letter, a digit, and a special character.</string>
+    <string name="registration_success">Registration successful!</string>
+    <string name="registration_failed">Registration failed: Server error</string>
+    <string name="connection_error">Connection error: %s</string>
+
+    <string name="dashboard_title">Main Menu</string>
+    <string name="btn_try_ar">Try AR Design</string>
+    <string name="btn_book_appointment">Book Appointment</string>
+    <string name="btn_my_profile">My Profile</string>
+    <string name="btn_logout">Log Out</string>
+</resources>
