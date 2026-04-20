@@ -13,13 +13,19 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.viktoriastoycheva.manicurear.ar.HandTrackingHelper
+import com.viktoriastoycheva.manicurear.ar.OverlayView // НОВО: Вмъкваме нашия OverlayView
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+import android.util.Size
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 
 class CameraActivity : AppCompatActivity() {
 
     private lateinit var viewFinder: PreviewView
     private lateinit var tvStatus: TextView
+    private lateinit var overlayView: OverlayView // НОВО: Променлива за OverlayView
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var handTrackingHelper: HandTrackingHelper
 
@@ -29,21 +35,22 @@ class CameraActivity : AppCompatActivity() {
 
         viewFinder = findViewById(R.id.viewFinder)
         tvStatus = findViewById(R.id.tvStatus)
+        overlayView = findViewById(R.id.overlayView) // НОВО: Намираме го в XML
+
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Инициализираме твоя Helper
         handTrackingHelper = HandTrackingHelper(this) { result ->
-            // Това се вика, когато MediaPipe намери ръка
             runOnUiThread {
-                if (result.landmarks().isNotEmpty()) {
+                if (result != null && result.landmarks().isNotEmpty()) {
                     tvStatus.text = "HAND DETECTED! \u2705"
+                    overlayView.setResults(result)
                 } else {
                     tvStatus.text = "Searching for hand..."
+                    overlayView.setResults(null) // Трябва да подаваме null
                 }
             }
         }
 
-        // Проверка за разрешение на камерата
         if (allPermissionsGranted()) {
             startCamera()
         } else {
@@ -57,44 +64,61 @@ class CameraActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
-            // Настройка на Preview (какво виждаме на екрана)
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(viewFinder.surfaceProvider)
             }
 
-            // Настройка на Image Analysis (какво "вижда" MediaPipe)
+            // --- НОВИЯТ МОДЕРЕН НАЧИН ЗА РЕЗОЛЮЦИЯ ---
+            val resolutionSelector = ResolutionSelector.Builder()
+                .setResolutionStrategy(
+                    ResolutionStrategy(
+                        Size(1280, 720),
+                        ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER
+                    )
+                ).build()
+
             val imageAnalyzer = ImageAnalysis.Builder()
+                .setResolutionSelector(resolutionSelector) // Използваме селектора тук
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-                .also {
-                    it.setAnalyzer(cameraExecutor) { imageProxy ->
-                        // Превръщаме ImageProxy в Bitmap за MediaPipe
+                .also { analyzer ->
+                    analyzer.setAnalyzer(cameraExecutor) { imageProxy ->
                         val bitmap = imageProxy.toBitmap()
-                        handTrackingHelper.detectHands(bitmap, System.currentTimeMillis())
+                        if (bitmap != null) {
+                            handTrackingHelper.detectHands(bitmap, System.currentTimeMillis())
+                        }
                         imageProxy.close()
                     }
                 }
+            // ------------------------------------------
 
             try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageAnalyzer)
+                cameraProvider.bindToLifecycle(
+                    this,
+                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    preview,
+                    imageAnalyzer
+                )
             } catch (e: Exception) {
                 Toast.makeText(this, "Camera failed to start", Toast.LENGTH_SHORT).show()
             }
         }, ContextCompat.getMainExecutor(this))
     }
 
-    // Помощен метод за превръщане на камера кадъра в Bitmap
-    private fun ImageProxy.toBitmap(): Bitmap {
-        val buffer = planes[0].buffer
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
-        // Тук използваме опростен метод за конвертиране (за теста е ок)
-        return viewFinder.bitmap!!
-    }
-
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun ImageProxy.toBitmap(): Bitmap? {
+        val plane = planes[0]
+        val buffer = plane.buffer
+        val pixelStride = plane.pixelStride
+        val rowStride = plane.rowStride
+        val rowPadding = rowStride - pixelStride * width
+        val bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888)
+        bitmap.copyPixelsFromBuffer(buffer)
+        return bitmap
     }
 
     companion object {
