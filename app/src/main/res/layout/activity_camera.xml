@@ -1,29 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:layout_height="match_parent">
 
+    <!-- 1. Камерата -->
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 2. Нашият AR слой -->
     <com.viktoriastoycheva.manicurear.ar.OverlayView
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 3. Статус текст -->
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="50dp"
-        android:background="#80000000"
-        android:padding="8dp"
         android:text="Searching for hand..."
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:background="#80000000"
+        android:padding="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp" />
 
-</FrameLayout>
+    <!-- 4. Бутон Любими (Сърце) -->
+    <ImageButton
+        android:id="@+id/btnFavorite"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/heart_white"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp" />
+
+    <!-- 5. Бутон за отваряне на Менюто (тип TikTok) -->
+    <Button
+        android:id="@+id/btnOpenDesigns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Designs"
+        android:backgroundTint="@color/purple_tint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="32dp" />
+
+    <!-- 6. Бутон "Избери за час" (Скрит по подразбиране) -->
+    <Button
+        android:id="@+id/btnConfirmSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Design"
+        android:visibility="gone"
+        android:backgroundTint="#4CAF50"
+        app:layout_constraintBottom_toTopOf="@id/btnOpenDesigns"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

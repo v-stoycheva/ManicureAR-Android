@@ -1,13 +1,19 @@
 package com.viktoriastoycheva.manicurear.ar
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "ar_designs")
 data class ArDesign(
-    @PrimaryKey(autoGenerate = true) val ar_design_id: Int = 0,
-    val category_id: Int,
+    @SerializedName("arDesignId")
+    val ar_design_id: Long,
+
+    @SerializedName("category")
+    val category: Any? = null,
+
     val name: String,
+
+    @SerializedName("filePath")
     val file_path: String,
+
+    @SerializedName("isActive")
     val is_active: Boolean = true
 )

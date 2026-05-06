@@ -36,6 +36,13 @@ class OverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         invalidate()
     }
 
+    // Метод за смяна на дизайна в реално време
+    fun updateNailTexture(newBitmap: Bitmap) {
+        // Оразмеряваме новия Bitmap веднага, за да не го правим в draw()
+        nailBitmap = newBitmap
+        invalidate() // Прерисуваме екрана
+    }
+
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
 

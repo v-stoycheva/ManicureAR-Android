@@ -1,5 +1,6 @@
 package com.viktoriastoycheva.manicurear.network
 
+import com.viktoriastoycheva.manicurear.ar.ArDesign
 import com.viktoriastoycheva.manicurear.models.Service
 import com.viktoriastoycheva.manicurear.models.User
 import retrofit2.Call
@@ -28,4 +29,16 @@ interface ApiService {
         @Field("currentPassword") current: String,
         @Field("newPassword") new: String
     ): Call<Void>
+
+    @GET("api/ar-designs") // Провери пътя в твоя Controller в IntelliJ
+    fun getAllArDesigns(): Call<List<ArDesign>>
+
+    @POST("api/users/{userId}/favorites/{designId}")
+    fun toggleFavorite(@Path("userId") userId: Long, @Path("designId") designId: Long): Call<Void>
+
+    @GET("api/users/{userId}/favorites")
+    fun getFavoriteDesigns(@Path("userId") userId: Long): Call<List<ArDesign>>
+
+    @GET("api/services")
+    fun getServices(): Call<List<Service>>
 }
