@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.viktoriastoycheva.manicurear.R
+import com.viktoriastoycheva.manicurear.adapters.DesignAdapter
+import com.viktoriastoycheva.manicurear.models.ArDesign
 import com.viktoriastoycheva.manicurear.network.ApiClient
 import com.viktoriastoycheva.manicurear.network.ApiService
 import com.viktoriastoycheva.manicurear.utils.SessionManager
@@ -36,7 +38,7 @@ class DesignBottomSheet(
         val tabLayout = view.findViewById<TabLayout>(R.id.tabLayout)
         val rvDesigns = view.findViewById<RecyclerView>(R.id.rvDesigns)
 
-        apiService = ApiClient.getClient().create(ApiService::class.java)
+        apiService = ApiClient.instance
 
         adapter = DesignAdapter(listOf()) { design ->
             onDesignSelected(design)

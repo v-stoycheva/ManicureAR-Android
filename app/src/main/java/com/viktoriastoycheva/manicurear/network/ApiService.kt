@@ -1,15 +1,14 @@
 package com.viktoriastoycheva.manicurear.network
 
-import com.viktoriastoycheva.manicurear.ar.ArDesign
+import com.viktoriastoycheva.manicurear.models.Appointment
+import com.viktoriastoycheva.manicurear.models.ArDesign
 import com.viktoriastoycheva.manicurear.models.Service
+import com.viktoriastoycheva.manicurear.models.StaffAvailability
 import com.viktoriastoycheva.manicurear.models.User
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
-    @GET("api/services")
-    fun getAllServices(): Call<List<Service>>
-
     @POST("api/users/login")
     fun login(@Query("email") email: String, @Query("password") password: String): Call<User>
 
@@ -40,5 +39,26 @@ interface ApiService {
     fun getFavoriteDesigns(@Path("userId") userId: Long): Call<List<ArDesign>>
 
     @GET("api/services")
-    fun getServices(): Call<List<Service>>
+    fun getAllServices(): Call<List<Service>>
+
+    @GET("api/users/manicurists")
+    fun getManicurists(): Call<List<User>>
+
+    @GET("api/appointments/manicurist/{id}")
+    fun getManicuristAppointments(@Path("id") id: Long): Call<List<Appointment>>
+
+    @GET("api/staff-availability/manicurist/{id}")
+    fun getManicuristAvailability(@Path("id") id: Long): Call<List<StaffAvailability>>
+
+    @POST("api/appointments")
+    fun createAppointment(@Body appointment: Appointment): Call<Appointment>
+
+    @GET("api/users/{id}")
+    fun getUserById(@Path("id") id: Long): Call<User>
+
+    @GET("api/appointments/client/{clientId}")
+    fun getClientHistory(@Path("clientId") clientId: Long): Call<List<Appointment>>
+
+    @PUT("api/appointments/{id}/cancel")
+    fun cancelAppointment(@Path("id") id: Long): Call<Void>
 }

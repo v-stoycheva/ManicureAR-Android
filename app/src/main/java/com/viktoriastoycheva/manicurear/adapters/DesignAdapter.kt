@@ -1,6 +1,5 @@
-package com.viktoriastoycheva.manicurear.ar
+package com.viktoriastoycheva.manicurear.adapters
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.viktoriastoycheva.manicurear.R
+import com.viktoriastoycheva.manicurear.models.ArDesign
 
 class DesignAdapter(
     private var designs: List<ArDesign>,
@@ -32,7 +32,7 @@ class DesignAdapter(
 
         // Използваме Glide за зареждане от Firebase URL
         Glide.with(holder.itemView.context)
-            .load(design.file_path)
+            .load(design.filePath)
             .timeout(60000)
             .placeholder(R.drawable.nail_texture)
             .error(R.drawable.nail_texture)

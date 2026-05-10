@@ -1,6 +1,7 @@
 package com.viktoriastoycheva.manicurear
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -21,10 +22,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.viktoriastoycheva.manicurear.ar.ArDesign
 import com.viktoriastoycheva.manicurear.ar.DesignBottomSheet
 import com.viktoriastoycheva.manicurear.ar.HandTrackingHelper
 import com.viktoriastoycheva.manicurear.ar.OverlayView
+import com.viktoriastoycheva.manicurear.models.ArDesign
 import com.viktoriastoycheva.manicurear.network.ApiClient
 import com.viktoriastoycheva.manicurear.network.ApiService
 import com.viktoriastoycheva.manicurear.utils.SessionManager
@@ -51,7 +52,8 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var btnConfirmSelection: Button
     private lateinit var btnFavorite: ImageButton
 
-    private var currentDesignId: Long = -1L // Вече е Long, за да съответства на ArDesignId от Java сървъра
+    private var currentDesignId: Long = -1L
+    private var selectedDesignObject: ArDesign? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +61,7 @@ class CameraActivity : AppCompatActivity() {
 
         val isBookingMode = intent.getBooleanExtra("IS_BOOKING_MODE", false)
         sessionManager = SessionManager(this)
-        apiService = ApiClient.getClient().create(ApiService::class.java)
+        apiService = ApiClient.instance
 
         // Инициализация на UI
         viewFinder = findViewById(R.id.viewFinder)
@@ -77,13 +79,14 @@ class CameraActivity : AppCompatActivity() {
         // 1. Избор на дизайн (Bottom Sheet)
         btnOpenDesigns.setOnClickListener {
             val bottomSheet = DesignBottomSheet { selectedDesign ->
-                currentDesignId = selectedDesign.ar_design_id.toLong()
+                selectedDesignObject = selectedDesign
+                currentDesignId = selectedDesign.arDesignId.toLong()
                 checkIfFavorite(sessionManager.getUserId(), currentDesignId)
 
                 // Добавяме слушател за грешки в Glide
                 Glide.with(this)
                     .asBitmap()
-                    .load(selectedDesign.file_path)
+                    .load(selectedDesign.filePath)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             overlayView.updateNailTexture(resource) // Слага истинския дизайн
@@ -125,13 +128,18 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
-        // 3. Потвърждаване на избора за резервация[cite: 11]
+        // 3. Потвърждаване на избора за резервация
         btnConfirmSelection.setOnClickListener {
-            if (currentDesignId != -1L) {
+            if (selectedDesignObject != null) {
                 val resultIntent = Intent()
+                // Вече използваме .name вместо .design_name
+                resultIntent.putExtra("SELECTED_DESIGN_NAME", selectedDesignObject?.name)
                 resultIntent.putExtra("SELECTED_DESIGN_ID", currentDesignId)
-                setResult(RESULT_OK, resultIntent)
+
+                setResult(Activity.RESULT_OK, resultIntent)
                 finish()
+            } else {
+                Toast.makeText(this, "Please select a design from the menu first", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -150,7 +158,7 @@ class CameraActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val favorites = response.body() ?: emptyList()
                     // Сравняваме ID-тата, за да разберем дали дизайнът е в любими
-                    val isFav = favorites.any { it.ar_design_id.toLong() == designId }
+                    val isFav = favorites.any { it.arDesignId.toLong() == designId }
                     btnFavorite.setImageResource(
                         if (isFav) R.drawable.ic_favorite_filled else R.drawable.heart_white
                     )

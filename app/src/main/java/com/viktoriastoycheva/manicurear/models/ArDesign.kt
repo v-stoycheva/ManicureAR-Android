@@ -1,19 +1,17 @@
-package com.viktoriastoycheva.manicurear.ar
+package com.viktoriastoycheva.manicurear.models
 
 import com.google.gson.annotations.SerializedName
 
 data class ArDesign(
     @SerializedName("arDesignId")
-    val ar_design_id: Long,
+    val arDesignId: Long,
 
-    @SerializedName("category")
-    val category: Any? = null,
-
+    @SerializedName("name")
     val name: String,
 
     @SerializedName("filePath")
-    val file_path: String,
+    val filePath: String,
 
     @SerializedName("isActive")
-    val is_active: Boolean = true
+    val isActive: Boolean = true
 )

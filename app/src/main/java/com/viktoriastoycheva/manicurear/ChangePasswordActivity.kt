@@ -57,7 +57,7 @@ class ChangePasswordActivity : AppCompatActivity() {
     private fun changePasswordOnServer(current: String, new: String) {
         val sessionManager = SessionManager(this)
         val userId = sessionManager.getUserId()
-        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val apiService = ApiClient.instance
 
         apiService.changePassword(userId, current, new).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {

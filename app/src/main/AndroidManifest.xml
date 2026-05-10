@@ -26,6 +26,12 @@
         android:theme="@style/Theme.ManicureAR"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".MyAppointmentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BookingActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
             android:exported="false" />
         <activity

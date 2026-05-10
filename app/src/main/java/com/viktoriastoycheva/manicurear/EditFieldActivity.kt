@@ -103,7 +103,7 @@ class EditFieldActivity : AppCompatActivity() {
             return
         }
 
-        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val apiService = ApiClient.instance
 
         // КРИТИЧНО: Пращаме обекта само с полетата, които искаме да променим.
         // Останалите остават null, за да не ги презапише бекендът.

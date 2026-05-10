@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.viktoriastoycheva.manicurear.models.Service
 import com.viktoriastoycheva.manicurear.network.ApiClient
 import com.viktoriastoycheva.manicurear.network.ApiService
-import com.viktoriastoycheva.manicurear.network.ServiceAdapter
+import com.viktoriastoycheva.manicurear.adapters.ServiceAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +22,7 @@ class ServicesActivity : AppCompatActivity() {
         val rvServices = findViewById<RecyclerView>(R.id.rvServices)
         rvServices.layoutManager = LinearLayoutManager(this)
 
-        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val apiService = ApiClient.instance
 
         // Извличане на услугите от Backend-а
         apiService.getAllServices().enqueue(object : Callback<List<Service>> {

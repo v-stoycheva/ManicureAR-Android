@@ -1,4 +1,4 @@
-package com.viktoriastoycheva.manicurear.network
+package com.viktoriastoycheva.manicurear.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.viktoriastoycheva.manicurear.R
 import com.viktoriastoycheva.manicurear.models.Service
 
-class ServiceAdapter(private val services: List<Service>) :
-    RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
+class ServiceAdapter(
+    private val services: List<Service>,
+    private val onServiceClick: ((Service) -> Unit)? = null // Добавяме опционален клик
+) : RecyclerView.Adapter<ServiceAdapter.ServiceViewHolder>() {
 
-    // ViewHolder: Свързва се с елементите в item_service.xml
     class ServiceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView = view.findViewById(R.id.tvServiceTitle)
         val description: TextView = view.findViewById(R.id.tvServiceDescription)
@@ -27,11 +28,15 @@ class ServiceAdapter(private val services: List<Service>) :
 
     override fun onBindViewHolder(holder: ServiceViewHolder, position: Int) {
         val service = services[position]
-
         holder.title.text = service.title
         holder.description.text = service.description
         holder.price.text = "${service.price} EUR"
         holder.duration.text = "${service.durationMinutes} min"
+
+        // Ако сме подали клик (в BookingActivity), го активираме
+        holder.itemView.setOnClickListener {
+            onServiceClick?.invoke(service)
+        }
     }
 
     override fun getItemCount(): Int = services.size

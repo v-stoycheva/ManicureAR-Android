@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
 
-        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val apiService = ApiClient.instance
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
