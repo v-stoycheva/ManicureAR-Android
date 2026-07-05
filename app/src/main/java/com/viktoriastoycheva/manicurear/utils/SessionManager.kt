@@ -12,9 +12,9 @@ class SessionManager(context: Context) {
         private const val KEY_LAST_NAME = "last_name"
         private const val KEY_EMAIL = "email"
         private const val KEY_PHONE = "phone"
+        private const val KEY_ROLE_ID = "role_id"
     }
 
-    // Записване на данните след успешен Login
     fun saveUser(userId: Long, firstName: String?, lastName: String?, email: String?, phone: String?) {
         val editor = prefs.edit()
         editor.putLong(KEY_USER_ID, userId)
@@ -25,7 +25,6 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    // Вземане на името за Dashboard/Profile
     fun getFirstName(): String? = prefs.getString(KEY_FIRST_NAME, "User")
 
     fun getUserId(): Long = prefs.getLong("user_id", -1L)
@@ -37,8 +36,20 @@ class SessionManager(context: Context) {
     fun getEmail(): String? = prefs.getString(KEY_EMAIL, null)
     fun getPhone(): String? = prefs.getString(KEY_PHONE, "N/A")
 
-    // Изчистване при Logout
     fun logout() {
         prefs.edit().clear().apply()
     }
+    fun saveUser(userId: Long, firstName: String?, lastName: String?, email: String?, phone: String?, roleId: Int) {
+        val editor = prefs.edit()
+        editor.putLong(KEY_USER_ID, userId)
+        editor.putInt(KEY_ROLE_ID, roleId) // Записваме ролята
+        editor.putString(KEY_FIRST_NAME, firstName)
+        editor.putString(KEY_LAST_NAME, lastName)
+        editor.putString(KEY_EMAIL, email ?: "")
+        editor.putString(KEY_PHONE, phone)
+        editor.apply()
+    }
+
+    fun getRoleId(): Int = prefs.getInt(KEY_ROLE_ID, -1)
+
 }

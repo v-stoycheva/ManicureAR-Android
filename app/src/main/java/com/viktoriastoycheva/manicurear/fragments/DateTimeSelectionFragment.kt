@@ -42,41 +42,34 @@ class DateTimeSelectionFragment : Fragment(R.layout.fragment_date_time_selection
         val timeSlotsRecyclerView = view.findViewById<RecyclerView>(R.id.timeSlotsRecyclerView)
         tvCurrentMonth = view.findViewById(R.id.tvCurrentMonth)
 
-        // UI елементи на Summary Panel
         val summaryPanel = view.findViewById<View>(R.id.bookingSummaryPanel)
         val tvSummaryDateTime = view.findViewById<TextView>(R.id.tvSummaryDateTime)
         val btnConfirmBooking = view.findViewById<Button>(R.id.btnConfirmBooking)
 
-        // 1. Инициализиране на Календара
         calendarRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         calendarAdapter = CalendarAdapter { selectedDate ->
-            // При избор на нова дата скриваме панела, докато не се избере нов час
             summaryPanel.visibility = View.GONE
             loadAvailableSlots(selectedDate)
         }
         calendarRecyclerView.adapter = calendarAdapter
 
-        // 2. Инициализиране на Слотовете
         timeSlotsRecyclerView.layoutManager = GridLayoutManager(context, 4)
         timeSlotAdapter = TimeSlotAdapter { selectedTime ->
             viewModel.selectedDateTime = selectedTime
 
-            // Изчисляване на крайния час
             val duration = viewModel.selectedService?.durationMinutes ?: 60
             val endTime = selectedTime.plusMinutes(duration.toLong())
 
-            // Форматиране на информацията на английски
             val datePath = selectedTime.format(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH))
             val timePath = "${selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
 
             tvSummaryDateTime.text = "$datePath at $timePath"
 
-            // Визуализиране на долния панел
             summaryPanel.visibility = View.VISIBLE
         }
         timeSlotsRecyclerView.adapter = timeSlotAdapter
 
-        // 3. Бутон за потвърждение (Преминаване към Final Summary)
+        //  Бутон за потвърждение (Преминаване към Final Summary)
         btnConfirmBooking.setOnClickListener {
             Log.d("BookingFlow", "Moving to final summary screen")
             btnConfirmBooking.setOnClickListener {
@@ -84,7 +77,7 @@ class DateTimeSelectionFragment : Fragment(R.layout.fragment_date_time_selection
             }
         }
 
-        // 4. Навигация със стрелки
+        //  Навигация със стрелки
         view.findViewById<ImageButton>(R.id.btnNextWeek).setOnClickListener {
             val layoutManager = calendarRecyclerView.layoutManager as LinearLayoutManager
             val firstVisible = layoutManager.findFirstVisibleItemPosition()
@@ -99,7 +92,6 @@ class DateTimeSelectionFragment : Fragment(R.layout.fragment_date_time_selection
             calendarRecyclerView.smoothScrollToPosition(targetPos)
         }
 
-        // 5. Слушател за скролване (Месец Година в заглавието)
         calendarRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager

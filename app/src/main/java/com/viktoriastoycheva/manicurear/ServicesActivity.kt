@@ -24,12 +24,10 @@ class ServicesActivity : AppCompatActivity() {
 
         val apiService = ApiClient.instance
 
-        // Извличане на услугите от Backend-а
         apiService.getAllServices().enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
                 if (response.isSuccessful) {
                     val servicesList = response.body() ?: emptyList()
-                    // Слагаме данните в адаптера
                     rvServices.adapter = ServiceAdapter(servicesList)
                 } else {
                     Toast.makeText(this@ServicesActivity, "Failed to load services", Toast.LENGTH_SHORT).show()

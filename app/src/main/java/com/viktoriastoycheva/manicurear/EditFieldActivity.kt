@@ -30,11 +30,9 @@ class EditFieldActivity : AppCompatActivity() {
         val tvLabel = findViewById<TextView>(R.id.tvLabel)
         val etValue = findViewById<EditText>(R.id.etValue)
 
-        // 1. Взимаме данните от Intent
         fieldType = intent.getStringExtra("FIELD_TYPE") ?: "name"
         val currentValue = intent.getStringExtra("CURRENT_VALUE") ?: ""
 
-        // 2. Настройваме екрана според типа на полето
         setupUI(tvEditTitle, tvLabel, etValue, currentValue)
 
         btnBack.setOnClickListener { finish() }
@@ -70,9 +68,9 @@ class EditFieldActivity : AppCompatActivity() {
                 input.inputType = InputType.TYPE_CLASS_PHONE
             }
         }
-        input.setSelection(input.text.length) // Курсорът да отиде най-отзад
+        input.setSelection(input.text.length)
         input.isFocusableInTouchMode = true
-        input.requestFocus() // Автоматично активира полето за писане
+        input.requestFocus()
     }
 
     private fun saveDataToBackend(value: String) {
@@ -105,8 +103,6 @@ class EditFieldActivity : AppCompatActivity() {
 
         val apiService = ApiClient.instance
 
-        // КРИТИЧНО: Пращаме обекта само с полетата, които искаме да променим.
-        // Останалите остават null, за да не ги презапише бекендът.
         val updatedUser = User(
             firstName = fName,
             lastName = lName,
@@ -119,11 +115,10 @@ class EditFieldActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val returnedUser = response.body()
                     returnedUser?.let {
-                        // Обновяваме локалната сесия с това, което сървърът ни върна
                         sessionManager.saveUser(
-                            userId, // запазваме си оригиналното ID
+                            userId,
                             it.firstName ?: sessionManager.getFirstName(),
-                            it.lastName ?: "", // Тук може да добавиш getLastName() в SessionManager
+                            it.lastName ?: "",
                             it.email ?: sessionManager.getEmail() ?: "",
                             it.phone ?: sessionManager.getPhone()
                         )

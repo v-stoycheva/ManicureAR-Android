@@ -30,15 +30,12 @@ class BookingSummaryFragment : Fragment(R.layout.fragment_booking_summary) {
 
     private val viewModel: BookingViewModel by activityViewModels()
     private lateinit var sessionManager: SessionManager
-
-    // 1. Launcher за Камерата - приемаме името на дизайна
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val designName = result.data?.getStringExtra("SELECTED_DESIGN_NAME")
             val designId = result.data?.getLongExtra("SELECTED_DESIGN_ID", -1L)
 
             if (designId != null && designId != -1L) {
-                // Вече ползваме новите имена: arDesignId и name
                 viewModel.selectedDesign = com.viktoriastoycheva.manicurear.models.ArDesign(
                     arDesignId = designId,
                     name = designName ?: "Selected Design",
@@ -55,7 +52,6 @@ class BookingSummaryFragment : Fragment(R.layout.fragment_booking_summary) {
 
         setupBaseInfo(view)
 
-        // Бутон за Камерата
         view.findViewById<Button>(R.id.btnAddDesign).setOnClickListener {
             val intent = Intent(requireContext(), CameraActivity::class.java)
             intent.putExtra("IS_BOOKING_MODE", true)
@@ -126,19 +122,15 @@ class BookingSummaryFragment : Fragment(R.layout.fragment_booking_summary) {
         val manicurist = viewModel.selectedManicurist
         val dateTime = viewModel.selectedDateTime
 
-        // 1. Валидация преди изпращане
         if (user == null || service == null || manicurist == null || dateTime == null) {
             Toast.makeText(context, "Incomplete booking data. Please restart the process.", Toast.LENGTH_LONG).show()
             return
         }
 
-        // Показваме прогрес диалог или сменяме текста на бутона, за да не се натиска два пъти
         val btnConfirm = view?.findViewById<Button>(R.id.btnFinalConfirm)
         btnConfirm?.isEnabled = false
         btnConfirm?.text = "SENDING..."
 
-        // 2. Създаване на обекта за изпращане
-        // ВАЖНО: endTime се изчислява спрямо времетраенето на услугата
         val appointment = Appointment(
             appointmentId = null,
             client = user,
@@ -153,7 +145,6 @@ class BookingSummaryFragment : Fragment(R.layout.fragment_booking_summary) {
             createdAt = null
         )
 
-        // 3. API повикване
         ApiClient.instance.createAppointment(appointment).enqueue(object : Callback<Appointment> {
             override fun onResponse(call: Call<Appointment>, response: Response<Appointment>) {
                 if (response.isSuccessful) {
@@ -178,12 +169,10 @@ class BookingSummaryFragment : Fragment(R.layout.fragment_booking_summary) {
     }
 
     private fun showSuccessDialog() {
-        // Вместо просто Toast, показваме хубаво съобщение и затваряме процеса
         androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle("Success!")
             .setMessage("Your appointment has been booked successfully.")
             .setPositiveButton("OK") { _, _ ->
-                // Затваряме цялата BookingActivity и се връщаме в главното меню
                 activity?.finish()
             }
             .setCancelable(false)

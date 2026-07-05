@@ -20,7 +20,7 @@ class HandOverlayView(context: Context, attrs: AttributeSet?) : View(context, at
 
     fun setResults(handLandmarkerResult: HandLandmarkerResult) {
         results = handLandmarkerResult
-        invalidate() // Прерисувай екрана
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -28,7 +28,6 @@ class HandOverlayView(context: Context, attrs: AttributeSet?) : View(context, at
         results?.let { result ->
             for (landmarks in result.landmarks()) {
                 for (landmark in landmarks) {
-                    // MediaPipe дава координати от 0 до 1, затова ги умножаваме по ширината/височината
                     val x = landmark.x() * width
                     val y = landmark.y() * height
                     canvas.drawCircle(x, y, 10f, paint)

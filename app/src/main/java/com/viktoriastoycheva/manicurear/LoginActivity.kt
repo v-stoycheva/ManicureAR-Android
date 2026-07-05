@@ -22,12 +22,11 @@ class LoginActivity : AppCompatActivity() {
 
         val sessionManager = SessionManager(this)
 
-        // ПРОВЕРКА: Имаме ли вече логнат потребител?
         if (sessionManager.getEmail() != null) {
             val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
-            finish() // Затваряме LoginActivity, за да не може да се върнем към нея
-            return // Спираме изпълнението на останалия код надолу
+            finish()
+            return
         }
 
         setContentView(R.layout.activity_login)
@@ -44,13 +43,11 @@ class LoginActivity : AppCompatActivity() {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            // Basic validation
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, getString(R.string.error_empty_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // API call to login
             apiService.login(email, password).enqueue(object : Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
                     if (response.isSuccessful) {
@@ -79,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
             })
         }
 
-        // Navigate to Register screen
         tvGoToRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }

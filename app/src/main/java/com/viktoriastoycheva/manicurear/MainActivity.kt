@@ -22,25 +22,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Инициализация на View елементите
         sceneView = findViewById(R.id.sceneView)
         handOverlay = findViewById(R.id.handOverlay)
         placeButton = findViewById(R.id.placeButton)
 
-        // 2. Инициализация на MediaPipe помощника
         handTrackingHelper = HandTrackingHelper(this) { result ->
-            // Връщаме се в главния thread, за да обновим UI
             runOnUiThread {
                 handOverlay.setResults(result)
             }
         }
 
-        // 3. Настройка на AR сцената
         sceneView.apply {
-            planeRenderer.isVisible = true // Показва точките на ARCore за повърхност
+            planeRenderer.isVisible = true
         }
 
-        // 4. Слушател за всеки кадър (Frame)
         sceneView.onFrame = { frameTime ->
             if (!isProcessing) {
                 captureFrameForAnalysis()
@@ -48,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         placeButton.setOnClickListener {
-            // Тук по-късно ще добавим логиката за смяна на лака
         }
     }
 
@@ -70,8 +64,6 @@ class MainActivity : AppCompatActivity() {
         }, sceneView.handler)
     }
 
-    // SceneView управлява жизнения цикъл автоматично, 
-    // но можем да добавим логове тук за дебъгване ако е нужно.
     override fun onResume() {
         super.onResume()
     }

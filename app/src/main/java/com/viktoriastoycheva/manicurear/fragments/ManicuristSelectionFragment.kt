@@ -26,7 +26,6 @@ class ManicuristSelectionFragment : Fragment(R.layout.fragment_manicurist_select
         val recyclerView = view.findViewById<RecyclerView>(R.id.manicuristsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Директно викаме зареждането, като подаваме RecyclerView
         loadManicurists(recyclerView)
     }
 
@@ -36,7 +35,6 @@ class ManicuristSelectionFragment : Fragment(R.layout.fragment_manicurist_select
                 if (response.isSuccessful) {
                     val list = response.body() ?: emptyList()
 
-                    // Създаваме адаптера едва когато имаме списъка с хора
                     rv.adapter = ManicuristAdapter(list) { selectedArtist ->
                         viewModel.selectedManicurist = selectedArtist
                         // Преминаваме към календара

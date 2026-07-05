@@ -33,7 +33,7 @@ class ManicuristAdapter(
         holder.name.text = "${artist.firstName} ${artist.lastName}"
         holder.bio.text = artist.bio ?: "Manicurist"
 
-        // Зареждаме снимката с Glide (ако има такава)
+        // Зареждаме снимката с Glide
         if (!artist.profilePictureUrl.isNullOrEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(artist.profilePictureUrl)

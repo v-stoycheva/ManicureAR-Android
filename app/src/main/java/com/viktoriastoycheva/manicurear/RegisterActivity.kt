@@ -18,7 +18,6 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        // 1. ПЪРВО намираме елементите от XML по техните ID-та
         val etFirstName = findViewById<EditText>(R.id.etFirstName)
         val etLastName = findViewById<EditText>(R.id.etLastName)
         val etPhone = findViewById<EditText>(R.id.etPhone)
@@ -40,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
             val confirmPassword = etConfirmPassword.text.toString()
 
-            val selectedRole = Role(roleId = 3) // ROLE_CLIENT според твоята база
+            val selectedRole = Role(roleId = 3) // ROLE_CLIENT според базата
 
             if (password != confirmPassword) {
                 etConfirmPassword.error = getString(R.string.error_passwords_dont_match)

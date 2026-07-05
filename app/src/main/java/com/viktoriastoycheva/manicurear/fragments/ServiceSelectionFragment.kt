@@ -24,7 +24,6 @@ class ServiceSelectionFragment : Fragment(R.layout.fragment_service_selection) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Намираме RecyclerView в XML-а на фрагмента
         val recyclerView = view.findViewById<RecyclerView>(R.id.servicesRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -32,18 +31,14 @@ class ServiceSelectionFragment : Fragment(R.layout.fragment_service_selection) {
     }
 
     private fun loadServices(rv: RecyclerView) {
-        // Използваме твоя ApiClient.instance
         ApiClient.instance.getAllServices().enqueue(object : Callback<List<Service>> {
             override fun onResponse(call: Call<List<Service>>, response: Response<List<Service>>) {
                 if (response.isSuccessful) {
                     val servicesList = response.body() ?: emptyList()
 
-                    // Слагаме данните в твоя ServiceAdapter, като добавяме логика за клик
                     rv.adapter = ServiceAdapter(servicesList) { selectedService ->
-                        // 1. Запазваме избора във ViewModel
                         viewModel.selectedService = selectedService
 
-                        // 2. Казваме на главното Activity да ни прехвърли към следващата стъпка
                         (activity as? BookingActivity)?.onServiceSelected(selectedService)
                     }
                 } else {

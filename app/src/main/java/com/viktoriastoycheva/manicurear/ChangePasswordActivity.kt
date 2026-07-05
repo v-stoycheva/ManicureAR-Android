@@ -34,7 +34,6 @@ class ChangePasswordActivity : AppCompatActivity() {
             val new = etNew.text.toString()
             val confirm = etConfirm.text.toString()
 
-            // Валидация
             if (current.isEmpty() || new.isEmpty() || confirm.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener

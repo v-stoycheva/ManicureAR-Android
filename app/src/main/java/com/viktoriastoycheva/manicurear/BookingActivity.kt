@@ -23,7 +23,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class BookingActivity : AppCompatActivity() {
-    // ViewModel ще пази изборите на потребителя
     private val bookingViewModel: BookingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +33,6 @@ class BookingActivity : AppCompatActivity() {
         val userId = sessionManager.getUserId()
 
         if (userId != -1L) {
-            // Зареждаме пълния обект на потребителя от сървъра
             ApiClient.instance.getUserById(userId).enqueue(object : Callback<User> {
                 override fun onResponse(call: Call<User>, response: Response<User>) {
                     if (response.isSuccessful) {
@@ -46,7 +44,6 @@ class BookingActivity : AppCompatActivity() {
                 }
             })
         }
-        // Стартираме с първата стъпка
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.booking_fragment_container, ServiceSelectionFragment())
@@ -54,7 +51,6 @@ class BookingActivity : AppCompatActivity() {
         }
     }
 
-    // Функции за преминаване към следваща стъпка
     fun onServiceSelected(service: Service) {
         bookingViewModel.selectedService = service
         replaceFragment(ManicuristSelectionFragment())
@@ -83,7 +79,6 @@ class BookingActivity : AppCompatActivity() {
     fun navigateToSuccess() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.booking_fragment_container, BookingSuccessFragment())
-            // Не добавяме в BackStack, за да не може потребителят да се върне с бутона "назад"
             .commit()
     }
 

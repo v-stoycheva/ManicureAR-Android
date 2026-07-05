@@ -63,7 +63,6 @@ class CameraActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
         apiService = ApiClient.instance
 
-        // Инициализация на UI
         viewFinder = findViewById(R.id.viewFinder)
         tvStatus = findViewById(R.id.tvStatus)
         overlayView = findViewById(R.id.overlayView)
@@ -73,23 +72,20 @@ class CameraActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Видимост на бутона за потвърждение спрямо режима
         btnConfirmSelection.visibility = if (isBookingMode) View.VISIBLE else View.GONE
 
-        // 1. Избор на дизайн (Bottom Sheet)
         btnOpenDesigns.setOnClickListener {
             val bottomSheet = DesignBottomSheet { selectedDesign ->
                 selectedDesignObject = selectedDesign
                 currentDesignId = selectedDesign.arDesignId.toLong()
                 checkIfFavorite(sessionManager.getUserId(), currentDesignId)
 
-                // Добавяме слушател за грешки в Glide
                 Glide.with(this)
                     .asBitmap()
                     .load(selectedDesign.filePath)
                     .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            overlayView.updateNailTexture(resource) // Слага истинския дизайн
+                            overlayView.updateNailTexture(resource)
                             Toast.makeText(this@CameraActivity, "Design loaded!", Toast.LENGTH_SHORT).show()
                         }
 
@@ -110,7 +106,6 @@ class CameraActivity : AppCompatActivity() {
                 apiService.toggleFavorite(userId, currentDesignId).enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful) {
-                            // ТОВА Е КЛЮЧЪТ: Извикваме checkIfFavorite, за да презареди статуса от сървъра
                             checkIfFavorite(userId, currentDesignId)
                             Toast.makeText(this@CameraActivity, "Updated!", Toast.LENGTH_SHORT).show()
                         } else {
@@ -128,11 +123,9 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
-        // 3. Потвърждаване на избора за резервация
         btnConfirmSelection.setOnClickListener {
             if (selectedDesignObject != null) {
                 val resultIntent = Intent()
-                // Вече използваме .name вместо .design_name
                 resultIntent.putExtra("SELECTED_DESIGN_NAME", selectedDesignObject?.name)
                 resultIntent.putExtra("SELECTED_DESIGN_ID", currentDesignId)
 
@@ -166,12 +159,8 @@ class CameraActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<ArDesign>>, t: Throwable) {
-                // ТУК ДОПЪЛВАМЕ:
-                // 1. Логваме грешката в конзолата (Logcat), за да я видиш при дебъгване
                 android.util.Log.e("NETWORK_ERROR", "Failed to connect to server: ${t.message}")
 
-                // 2. Показваме дискретно съобщение на потребителя
-                // Използваме runOnUiThread, за да сме сигурни, че Toast се показва правилно
                 runOnUiThread {
                     Toast.makeText(this@CameraActivity, "Connection lost. Heart status may be outdated.", Toast.LENGTH_SHORT).show()
                 }

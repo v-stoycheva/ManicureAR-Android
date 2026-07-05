@@ -66,8 +66,6 @@ class MyAppointmentsActivity : AppCompatActivity() {
     }
 
     private fun showCancelConfirmation(appointment: Bundle?) {
-        // Трябва ни ID-то за отмяна
-        // Но тъй като в адаптера подаваме целия обект:
     }
 
     // Реалният метод за потвърждение:

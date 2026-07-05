@@ -29,7 +29,6 @@ class DashboardActivity : AppCompatActivity() {
         val btnLogout = findViewById<Button>(R.id.btnLogout)
 
         btnTryAR.setOnClickListener {
-            // Връзка към AR камерата
             startActivity(Intent(this, CameraActivity::class.java))
         }
 
@@ -50,7 +49,6 @@ class DashboardActivity : AppCompatActivity() {
             sessionManager.logout()
 
             val intent = Intent(this, LoginActivity::class.java)
-            // Тези флагове изчистват цялата история на навигацията
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
@@ -77,7 +75,6 @@ class DashboardActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Appointment>>, t: Throwable) {
-                // Ако няма интернет или API-то падне, скриваме картата, за да не пречи
                 findViewById<View>(R.id.includedNextAppointment).visibility = View.GONE
             }
         })
@@ -98,13 +95,10 @@ class DashboardActivity : AppCompatActivity() {
             tvArtist.text = "with ${appointment.manicurist.firstName}"
             detailsLayout.visibility = View.VISIBLE
 
-            // Опция: При клик върху картата да отваря списъка с всички резервации
             card.setOnClickListener {
                 startActivity(Intent(this, MyAppointmentsActivity::class.java))
             }
         } else {
-            // Ако няма предстоящ час, можем или да скрием картата,
-            // или да я оставим като покана за нова резервация
             tvService.text = "Ready for a new design?"
             detailsLayout.visibility = View.GONE
             card.setOnClickListener {

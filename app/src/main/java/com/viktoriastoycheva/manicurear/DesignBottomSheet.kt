@@ -68,7 +68,6 @@ class DesignBottomSheet(
         val sessionManager = SessionManager(requireContext())
         val userId = sessionManager.getUserId()
 
-        // 1. Взимаме всички активни дизайни от сървъра
         apiService.getAllArDesigns().enqueue(object : Callback<List<ArDesign>> {
             override fun onResponse(call: Call<List<ArDesign>>, response: Response<List<ArDesign>>) {
                 if (response.isSuccessful) {
@@ -81,7 +80,6 @@ class DesignBottomSheet(
             }
         })
 
-        // 2. Взимаме любимите дизайни за конкретния потребител[cite: 18]
         if (userId != -1L) {
             apiService.getFavoriteDesigns(userId).enqueue(object : Callback<List<ArDesign>> {
                 override fun onResponse(call: Call<List<ArDesign>>, response: Response<List<ArDesign>>) {

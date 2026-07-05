@@ -29,9 +29,6 @@ class HandTrackingHelper(
             .setMinTrackingConfidence(0.5f)
             .setRunningMode(RunningMode.LIVE_STREAM)
             .setResultListener { result, _ ->
-                // ПРЕМАХВАМЕ проверката isNotEmpty()
-                // Искаме да пращаме резултата ВИНАГИ, дори и да е празен,
-                // за да знае OverlayView кога да изчисти ноктите.
                 resultListener(result)
             }
 
@@ -40,8 +37,6 @@ class HandTrackingHelper(
 
     fun detectHands(bitmap: Bitmap, timestamp: Long) {
         try {
-            // MediaPipe работи най-добре, когато изображението е правилно ориентирано.
-            // Тъй като вече коригираме координатите в OverlayView, тук просто подаваме Bitmap-а.
             val mpImage = BitmapImageBuilder(bitmap).build()
             handLandmarker?.detectAsync(mpImage, timestamp)
         } catch (e: Exception) {
@@ -49,7 +44,6 @@ class HandTrackingHelper(
         }
     }
 
-    // Добра практика е да добавим метод за затваряне, за да не хабим ресурси
     fun close() {
         handLandmarker?.close()
     }
